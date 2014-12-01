@@ -108,6 +108,7 @@
 		C8E0E65DCA64D0B159C50130 /* ofxOscEvent.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscEvent.h; path = ../../../addons/ofxOscEvent/src/ofxOscEvent.h; sourceTree = SOURCE_ROOT; };
 		D9BFFBBF4CC43DEE890B3C3E /* OscTypes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscTypes.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscTypes.cpp; sourceTree = SOURCE_ROOT; };
 		DE1128AE194B53450017015E /* ofxOscEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ofxOscEvent.cpp; path = ../src/ofxOscEvent.cpp; sourceTree = "<group>"; };
+		DEBFE1621A2C6F3300279547 /* ofxOscEventListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ofxOscEventListener.h; path = ../src/ofxOscEventListener.h; sourceTree = "<group>"; };
 		DF49D76C45D5DB505A234880 /* ofxOscMessage.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscMessage.cpp; path = ../../../addons/ofxOsc/src/ofxOscMessage.cpp; sourceTree = SOURCE_ROOT; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -214,6 +215,7 @@
 			children = (
 				DE1128AE194B53450017015E /* ofxOscEvent.cpp */,
 				C8E0E65DCA64D0B159C50130 /* ofxOscEvent.h */,
+				DEBFE1621A2C6F3300279547 /* ofxOscEventListener.h */,
 			);
 			name = src;
 			sourceTree = "<group>";
