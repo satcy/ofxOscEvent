@@ -12,8 +12,11 @@ void testApp::setup(){
     osc.addEventListener("/test", this);
     
     // 3:
+    // if you wanna change class members in this way, use class pointer in global scope.
+    static testApp* self = this;
     osc.addEventListener("/test", this, ^(const ofxOscMessage& m){
         cout << "anonymous function \n";
+//        self->some_member = m.getArgAsInt32(0);
     });
 }
 
