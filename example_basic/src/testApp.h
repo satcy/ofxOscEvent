@@ -27,4 +27,5 @@ public:
     
     void printOutOscMessage(const ofxOscMessage & m);
 		
+    int count;
 };

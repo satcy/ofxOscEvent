@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
+    ofBackground(0);
+    ofSetFrameRate(60);
     osc.setup(12000);
     
     //ofxOscEvent has 3 ways for handling oscmessage.
@@ -42,6 +44,9 @@ void testApp::printOutOscMessage(const ofxOscMessage & m){
                 break;
         }
     }
+    if ( m.getAddress() == "/count" ) {
+        count = m.getArgAsInt32(0);
+    }
     cout << endl;
 }
 
@@ -62,12 +67,23 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-
+    ofSetColor(255);
+    ofDrawBitmapString(ofToString(ofGetFrameRate()), 10,10);
+    
+    ofDrawBitmapString(ofToString(count), 10,20);
+    ofRect(0, 30, count%500, 10);
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-
+    if ( key == ' ' ) {
+        osc.setNonRealtime(!osc.getNonRealTime());
+        if ( osc.getNonRealTime() ) {
+            ofSetFrameRate(15);
+        } else {
+            ofSetFrameRate(60);
+        }
+    }
 }
 
 //--------------------------------------------------------------

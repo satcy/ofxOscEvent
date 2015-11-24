@@ -29,92 +29,69 @@ namespace std {
 }
 #endif
 
-class ofxOscEvent : public ofxOscReceiver {
+class ofxOscEvent : public ofxOscReceiver, ofThread {
 private:
-  
+    class OscMessageWithTime{
+    public:
+        OscMessageWithTime(){}
+        ~OscMessageWithTime(){
+            m.clear();
+        }
+        ofxOscMessage m;
+        float time;
+        bool isOld;
+    };
 public:
     static ofEvent<ofxOscMessage> packetIn;
     
-    void setup(int port){
-        ofxOscReceiver::setup(port);
-        enable();
+    static bool isOld(OscMessageWithTime & m){
+        return m.isOld;
     }
     
-    void enable(){
-        ofRemoveListener(ofEvents().update, this, &ofxOscEvent::onUpdate);
-        ofAddListener(ofEvents().update, this, &ofxOscEvent::onUpdate);
+    ofxOscEvent() : isNonRealtime(false), fps(30) {
+        time = ofGetElapsedTimef();
     }
     
-    void disable(){
-        ofRemoveListener(ofEvents().update, this, &ofxOscEvent::onUpdate);
+    void setup(int port);
+    
+    //be true for dispatching per frame from cued osc messages.
+    void setNonRealtime(bool enable, float _fps = 30.0);
+    bool getNonRealTime(){
+        return isNonRealtime;
     }
     
-    void addEventListener(const string & type, ofxOscEventListener * listener ){
-        removeEventListener(type, listener);
-        listeners[type].push_back(listener);
-    }
+    void enable();
     
-    void removeEventListener(const string & type, ofxOscEventListener * listener){
-        vector<ofxOscEventListener*> list = listeners[type];
-        if ( !list.empty() ) {
-            list.erase(std::remove(list.begin(), list.end(), listener), list.end());
-        }
-    }
-	
-	void addEventListener(const string & addr, void* target, std::function<void(const ofxOscMessage&)> fn){
-		callback[addr][target] = fn;
-	}
-	
-	void removeEventListener(const string & addr, void* target){
-		map<string, map<void*, std::function<void(const ofxOscMessage&)> > >::iterator it = callback.find(addr);
-		if (it == callback.end()) return;
-		
-		map<void*, std::function<void(const ofxOscMessage&)> >& m = it->second;
-		m.erase(target);
-	}
+    void disable();
+    
+    void addEventListener(const string & type, ofxOscEventListener * listener );
+    void removeEventListener(const string & type, ofxOscEventListener * listener);
+    
+    void addEventListener(const string & addr, void* target, std::function<void(const ofxOscMessage&)> fn);
+    void removeEventListener(const string & addr, void* target);
+    
+    void threadedFunction();
+    
+    void notify(const string & addr, ofxOscMessage & m);
+    
+    const vector<OscMessageWithTime> & getMessages() { return messages; }
     
 protected:
     
-    void notify(const string & addr, ofxOscMessage & m){
-        ofNotifyEvent(packetIn, m);//OF buildin Event system
-        
-        //dispatching to extended ofxOscEventListener class
-        vector<ofxOscEventListener*> list = listeners[addr];
-        if ( !list.empty() ) {
-            for ( int i=0; i<list.size(); i++ ){
-                list[i]->onEventHandler(m);
-            }
-        }
-		
-        //dispatching to anonymous function target
-		map<string, map<void*, std::function<void(const ofxOscMessage&)> > >::iterator it = callback.find(addr);
-		if (it != callback.end())
-		{
-			typedef map<void*, std::function<void(const ofxOscMessage&)> > TargetList;
-			TargetList& TL = it->second;
-			TargetList::iterator target_it = TL.begin();
-			while (target_it != TL.end())
-			{
-				const std::function<void(const ofxOscMessage&)> &fn = target_it->second;
-				fn(m);
-				
-				target_it++;
-			}
-		}
-    }
+    void onUpdate(ofEventArgs & e);
     
-    void onUpdate(ofEventArgs & e){
-        while (hasWaitingMessages())
-		{
-			ofxOscMessage m;
-			getNextMessage(&m);
-			
-			string addr = m.getAddress();
-			notify(addr, m);
-		}
-    }
+    void updateThread();
+    
 protected:
     map< string, vector<ofxOscEventListener * > > listeners;
 	
 	map<string, map<void*, std::function<void(const ofxOscMessage&)> > > callback;
+    
+    vector<OscMessageWithTime> messages;
+    
+    float time;
+    float last_thread_time;
+    bool isNonRealtime;
+    float fps;
+    
 };
